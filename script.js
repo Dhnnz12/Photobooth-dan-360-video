@@ -21,6 +21,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const boothContainer = document.getElementById('booth-container');
     const settingMirror = document.getElementById('setting-mirror');
     const settingRotation = document.getElementById('setting-rotation');
+    
+    // Zoom and Pan
+    const settingZoom = document.getElementById('setting-zoom');
+    const settingPanX = document.getElementById('setting-pan-x');
+    const settingPanY = document.getElementById('setting-pan-y');
 
     let currentStream = null;
     let mediaRecorder;
@@ -97,11 +102,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Calculate scale to cover the target dimensions completely
-            const scale = Math.max(targetWidth / srcWidth, targetHeight / srcHeight);
+            const baseScale = Math.max(targetWidth / srcWidth, targetHeight / srcHeight);
+            
+            // Get zoom and pan values
+            const zoom = settingZoom ? parseFloat(settingZoom.value) : 1;
+            const panX = settingPanX ? parseInt(settingPanX.value) : 0;
+            const panY = settingPanY ? parseInt(settingPanY.value) : 0;
+            
+            const scale = baseScale * zoom;
 
             ctx.save();
-            // Move to center of canvas
-            ctx.translate(targetWidth / 2, targetHeight / 2);
+            // Move to center of canvas + apply pan
+            ctx.translate((targetWidth / 2) + panX, (targetHeight / 2) + panY);
             
             // Apply Mirror
             if (isMirrored) ctx.scale(-1, 1);
