@@ -349,15 +349,40 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append('reqtype', 'fileupload');
             formData.append('fileToUpload', blob, filename);
             
-            // Catbox.moe provides direct URLs with NO Ads
-            const response = await fetch('https://catbox.moe/user/api.php', {
-                method: 'POST',
-                body: formData
-            });
+            // Catbox.moe via CORS proxy to bypass browser restrictions
+            let uploadSuccess = false;
+            let dlUrl = "";
             
-            if (response.ok) {
-                const dlUrl = await response.text(); // Returns raw direct URL
+            try {
+                const response = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://catbox.moe/user/api.php'), {
+                    method: 'POST',
+                    body: formData
+                });
                 
+                if (response.ok) {
+                    dlUrl = await response.text();
+                    uploadSuccess = true;
+                }
+            } catch (err) {
+                console.warn("Corsproxy failed, falling back...", err);
+            }
+            
+            // Fallback to tmpfiles if catbox fails
+            if (!uploadSuccess) {
+                const tmpFormData = new FormData();
+                tmpFormData.append('file', blob, filename);
+                const tmpRes = await fetch('https://tmpfiles.org/api/v1/upload', {
+                    method: 'POST',
+                    body: tmpFormData
+                });
+                const tmpData = await tmpRes.json();
+                if (tmpData.status === 'success') {
+                    dlUrl = tmpData.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+                    uploadSuccess = true;
+                }
+            }
+            
+            if (uploadSuccess) {
                 // Get current host directory path
                 const currentUrlPath = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
                 // Point QR to our own download page wrapper
@@ -377,7 +402,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 note.style.fontSize = '0.8rem';
                 note.style.color = '#4caf50';
                 note.style.marginTop = '10px';
-                note.innerText = "*Scan untuk mendownload langsung (Tanpa Iklan).";
+                note.innerText = "*Scan untuk mendownload otomatis (Tanpa Iklan).";
                 qrContainer.appendChild(note);
             } else {
                 qrContainer.innerHTML = '<p class="qr-text" style="color: red;">Gagal mengunggah file.</p>';
