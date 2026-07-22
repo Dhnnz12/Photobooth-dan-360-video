@@ -1,0 +1,327 @@
+:root {
+    --bg-dark: #121212;
+    --panel-bg: rgba(25, 25, 30, 0.8);
+    --text-main: #ffffff;
+    --primary: #ff007f;
+    --primary-hover: #e60073;
+    --danger: #ff3333;
+    --danger-hover: #cc0000;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Outfit', sans-serif;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: radial-gradient(circle at 50% 0%, #2a1b38 0%, #121212 70%);
+}
+
+.app-container {
+    width: 100%;
+    max-width: 1200px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.logo {
+    font-size: 2rem;
+    font-weight: 800;
+}
+.logo span {
+    color: var(--primary);
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+    align-items: center;
+}
+
+@media (min-width: 900px) {
+    main {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+}
+
+/* Camera Section */
+.camera-section {
+    flex: 2;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.booth-container {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    background: #000;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transition: aspect-ratio 0.3s;
+}
+
+.ratio-landscape {
+    aspect-ratio: 16/9;
+}
+
+.ratio-portrait {
+    aspect-ratio: 9/16;
+    max-width: 500px; /* Limit width so it doesn't get too tall */
+}
+
+.ratio-square {
+    aspect-ratio: 1/1;
+    max-width: 600px;
+}
+
+#capture-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Flash Effect */
+.flash-effect {
+    position: absolute;
+    inset: 0;
+    background: white;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 20;
+    transition: opacity 0.1s;
+}
+.flash-effect.active {
+    opacity: 1;
+}
+
+/* Controls */
+.controls-section {
+    flex: 1;
+    width: 100%;
+    padding: 30px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.glass {
+    background: var(--panel-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.control-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+select {
+    width: 100%;
+    padding: 12px;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.template-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.template-btn {
+    padding: 10px 15px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.template-btn.active, .template-btn:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+.custom-overlay-upload {
+    margin-top: 15px;
+    width: 100%;
+}
+
+.upload-btn {
+    display: inline-block;
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px dashed rgba(255, 255, 255, 0.4);
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    width: 100%;
+    transition: 0.3s;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.upload-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-color: white;
+}
+
+.video-settings {
+    background: rgba(0,0,0,0.3);
+    padding: 15px;
+    border-radius: 12px;
+}
+
+.setting-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.setting-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.setting-item label {
+    margin-bottom: 0;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: auto;
+}
+
+button.btn-primary, button.btn-danger, a.btn-primary {
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+    text-align: center;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: var(--primary);
+}
+.btn-primary:hover {
+    background: var(--primary-hover);
+}
+
+.btn-danger {
+    background: var(--danger);
+}
+.btn-danger:hover {
+    background: var(--danger-hover);
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    padding: 30px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    text-align: center;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 10;
+}
+
+#result-container {
+    margin: 20px 0;
+    background: #000;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#result-container img, #result-container video {
+    width: 100%;
+    max-height: 45vh;
+    object-fit: contain;
+    display: block;
+}
+
+.result-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#qrcode {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: inline-block;
+    min-width: 150px;
+    min-height: 150px;
+}
+
+.qr-text {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}

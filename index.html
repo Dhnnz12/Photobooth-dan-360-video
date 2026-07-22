@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Photobooth & 360 Video</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header>
+            <div class="logo">Virtual<span>Booth</span></div>
+        </header>
+
+        <main>
+            <!-- Camera View Area -->
+            <div class="camera-section">
+                <div id="booth-container" class="booth-container">
+                    <video id="camera-stream" autoplay playsinline style="display:none;"></video>
+                    <canvas id="capture-canvas"></canvas>
+                </div>
+
+                <!-- Flash Effect -->
+                <div id="flash-effect" class="flash-effect"></div>
+            </div>
+
+            <!-- Controls Area -->
+            <div class="controls-section glass">
+                
+                <!-- Camera Selection -->
+                <div class="control-group">
+                    <label for="camera-select">📷 Pilih Kamera:</label>
+                    <select id="camera-select">
+                        <option value="">Memuat kamera...</option>
+                    </select>
+                </div>
+
+                <!-- Template Selection -->
+                <div class="control-group">
+                    <label>🖼️ Pilih Template Border:</label>
+                    <div class="template-options">
+                        <button class="template-btn active" data-template="template-none">None</button>
+                        <button class="template-btn" data-template="template-floral">Floral</button>
+                        <button class="template-btn" data-template="template-neon">Neon</button>
+                        <button class="template-btn" data-template="template-cinema">Cinema</button>
+                    </div>
+                    
+                    <div class="custom-overlay-upload">
+                        <label for="overlay-upload" class="upload-btn">➕ Unggah Overlay Sendiri (.png)</label>
+                        <input type="file" id="overlay-upload" accept="image/png" style="display: none;">
+                    </div>
+                </div>
+
+                <!-- Format Settings -->
+                <div class="control-group">
+                    <label>📐 Format Layar Hasil:</label>
+                    <select id="format-select">
+                        <option value="landscape">Landscape (16:9) - Memanjang ke samping</option>
+                        <option value="portrait">Portrait (9:16) - Memanjang ke atas</option>
+                        <option value="square">Square (1:1) - Kotak</option>
+                    </select>
+                </div>
+
+                <!-- Camera Adjustments -->
+                <div class="control-group">
+                    <label>🛠️ Penyesuaian Kamera (Iriun/Webcam):</label>
+                    <div class="setting-item" style="margin-bottom: 5px;">
+                        <input type="checkbox" id="setting-mirror" checked>
+                        <label for="setting-mirror">Efek Cermin (Mirror)</label>
+                    </div>
+                    <select id="setting-rotation">
+                        <option value="0">Rotasi Normal (0°)</option>
+                        <option value="90">Putar Kanan (90°)</option>
+                        <option value="180">Terbalik (180°)</option>
+                        <option value="270">Putar Kiri (270°)</option>
+                    </select>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button id="btn-photo" class="btn-primary">📸 Ambil Foto</button>
+                    <button id="btn-video" class="btn-danger">🎥 Rekam Video</button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Results Modal -->
+        <div id="result-modal" class="modal hidden">
+            <div class="modal-content glass">
+                <span id="close-modal" class="close">&times;</span>
+                <h2>Hasil Anda</h2>
+                <div id="result-container">
+                    <!-- Image or Video will be injected here -->
+                </div>
+                <div class="result-details">
+                    <div id="qrcode"></div>
+                    <p class="qr-text">Scan untuk unduh ke HP</p>
+                </div>
+                <div class="modal-actions">
+                    <a id="btn-download" href="#" download="photobooth.png" class="btn-primary">⬇️ Unduh</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scripts -->
+    </div>
+
+    <script src="script.js?v=3"></script>
+</body>
+</html>
