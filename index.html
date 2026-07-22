@@ -39,19 +39,35 @@
                     </select>
                 </div>
 
-                <!-- Template Selection -->
+                <!-- Photo Overlay Selection -->
                 <div class="control-group">
-                    <label>🖼️ Pilih Template Border:</label>
-                    <div class="template-options">
-                        <button class="template-btn active" data-template="template-none">None</button>
-                        <button class="template-btn" data-template="template-floral">Floral</button>
-                        <button class="template-btn" data-template="template-neon">Neon</button>
-                        <button class="template-btn" data-template="template-cinema">Cinema</button>
+                    <label>📸 Overlay Foto:</label>
+                    <div class="template-options photo-template">
+                        <button class="template-btn photo-btn active" data-template="template-none">None</button>
+                        <button class="template-btn photo-btn" data-template="template-floral">Floral</button>
+                        <button class="template-btn photo-btn" data-template="template-neon">Neon</button>
+                        <button class="template-btn photo-btn" data-template="template-cinema">Cinema</button>
                     </div>
                     
                     <div class="custom-overlay-upload">
-                        <label for="overlay-upload" class="upload-btn">➕ Unggah Overlay Sendiri (.png)</label>
-                        <input type="file" id="overlay-upload" accept="image/png" style="display: none;">
+                        <label for="photo-overlay-upload" class="upload-btn" style="background: #e91e63;">➕ Unggah Overlay Foto (.png)</label>
+                        <input type="file" id="photo-overlay-upload" accept="image/png" style="display: none;">
+                    </div>
+                </div>
+
+                <!-- Video Overlay Selection -->
+                <div class="control-group">
+                    <label>🎥 Overlay Video 360:</label>
+                    <div class="template-options video-template">
+                        <button class="template-btn video-btn active" data-template="template-none">None</button>
+                        <button class="template-btn video-btn" data-template="template-floral">Floral</button>
+                        <button class="template-btn video-btn" data-template="template-neon">Neon</button>
+                        <button class="template-btn video-btn" data-template="template-cinema">Cinema</button>
+                    </div>
+                    
+                    <div class="custom-overlay-upload">
+                        <label for="video-overlay-upload" class="upload-btn">➕ Unggah Overlay Video (.png)</label>
+                        <input type="file" id="video-overlay-upload" accept="image/png" style="display: none;">
                     </div>
                 </div>
 

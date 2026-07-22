@@ -25,7 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let mediaRecorder;
     let recordedChunks = [];
     let isRecording = false;
-    let currentTemplateClass = 'template-none';
+    let currentPhotoTemplate = 'template-none';
+    let currentVideoTemplate = 'template-none';
     let animationFrameId = null;
 
     // 1. Initialize Camera
@@ -115,21 +116,25 @@ document.addEventListener('DOMContentLoaded', () => {
             
             ctx.restore();
 
+            // Active template based on whether recording is active
+            const activeTemplate = isRecording ? currentVideoTemplate : currentPhotoTemplate;
+            const activeCustomImage = isRecording ? window.customVideoOverlay : window.customPhotoOverlay;
+
             // Draw template overlay over the video on the canvas
-            if (currentTemplateClass === 'template-neon') {
+            if (activeTemplate === 'template-neon') {
                 ctx.strokeStyle = '#00f0ff';
                 ctx.lineWidth = 40;
                 ctx.strokeRect(0, 0, captureCanvas.width, captureCanvas.height);
-            } else if (currentTemplateClass === 'template-cinema') {
+            } else if (activeTemplate === 'template-cinema') {
                 ctx.fillStyle = 'black';
                 ctx.fillRect(0, 0, captureCanvas.width, 150);
                 ctx.fillRect(0, captureCanvas.height - 150, captureCanvas.width, 150);
-            } else if (currentTemplateClass === 'template-floral') {
+            } else if (activeTemplate === 'template-floral') {
                 ctx.strokeStyle = '#ff007f';
                 ctx.lineWidth = 40;
                 ctx.strokeRect(0, 0, captureCanvas.width, captureCanvas.height);
-            } else if (currentTemplateClass === 'template-custom' && window.customOverlayImage) {
-                ctx.drawImage(window.customOverlayImage, 0, 0, captureCanvas.width, captureCanvas.height);
+            } else if (activeTemplate === 'template-custom' && activeCustomImage) {
+                ctx.drawImage(activeCustomImage, 0, 0, captureCanvas.width, captureCanvas.height);
             }
 
             animationFrameId = requestAnimationFrame(drawFrame);
@@ -168,36 +173,63 @@ document.addEventListener('DOMContentLoaded', () => {
         initCamera(e.target.value);
     });
 
-    // 3. Templates Selection
-    document.querySelectorAll('.template-btn').forEach(btn => {
+    // 3. Photo Templates Selection
+    document.querySelectorAll('.photo-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            templateBtns.forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.photo-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
-            currentTemplateClass = e.target.dataset.template;
+            currentPhotoTemplate = e.target.dataset.template;
         });
     });
 
-    // 3.5 Custom Overlay Upload
-    overlayUpload.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const imgDataUrl = event.target.result;
-                
-                // Clear active states
-                templateBtns.forEach(b => b.classList.remove('active'));
-                
-                currentTemplateClass = 'template-custom';
-                
-                // Save custom image to variable for canvas capture
-                window.customOverlayImage = new Image();
-                window.customOverlayImage.src = imgDataUrl;
-            };
-            reader.readAsDataURL(file);
-        }
+    // 3.5 Video Templates Selection
+    document.querySelectorAll('.video-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.video-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentVideoTemplate = e.target.dataset.template;
+        });
     });
+
+    // 4. Custom Photo Overlay Upload
+    const photoOverlayUpload = document.getElementById('photo-overlay-upload');
+    if (photoOverlayUpload) {
+        photoOverlayUpload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const imgDataUrl = event.target.result;
+                    document.querySelectorAll('.photo-btn').forEach(b => b.classList.remove('active'));
+                    currentPhotoTemplate = 'template-custom';
+                    
+                    window.customPhotoOverlay = new Image();
+                    window.customPhotoOverlay.src = imgDataUrl;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    // 4.5 Custom Video Overlay Upload
+    const videoOverlayUpload = document.getElementById('video-overlay-upload');
+    if (videoOverlayUpload) {
+        videoOverlayUpload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const imgDataUrl = event.target.result;
+                    document.querySelectorAll('.video-btn').forEach(b => b.classList.remove('active'));
+                    currentVideoTemplate = 'template-custom';
+                    
+                    window.customVideoOverlay = new Image();
+                    window.customVideoOverlay.src = imgDataUrl;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
 
     // 4. Capture Photo
     btnPhoto.addEventListener('click', () => {
