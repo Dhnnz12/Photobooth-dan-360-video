@@ -400,6 +400,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             if (uploadSuccess) {
+                // Store globally for email sending
+                window.currentDownloadUrl = dlUrl;
+                
                 // Get current host directory path
                 const currentUrlPath = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
                 // Point QR to our own download page wrapper
@@ -462,10 +465,70 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Email Logic using EmailJS
+    const btnSendEmail = document.getElementById('btn-send-email');
+    const guestEmailInput = document.getElementById('guest-email');
+    const emailStatus = document.getElementById('email-status');
+
+    if (btnSendEmail) {
+        btnSendEmail.addEventListener('click', () => {
+            const email = guestEmailInput.value.trim();
+            if (!email) {
+                emailStatus.style.display = 'block';
+                emailStatus.style.color = '#ff6b6b';
+                emailStatus.innerText = "Harap masukkan email yang valid.";
+                return;
+            }
+            if (!window.currentDownloadUrl) {
+                emailStatus.style.display = 'block';
+                emailStatus.style.color = '#ff6b6b';
+                emailStatus.innerText = "Tunggu hingga proses upload foto/QR selesai.";
+                return;
+            }
+
+            // TODO: GANTI DENGAN KUNCI EMAILJS ANDA!
+            // emailjs.init("YOUR_PUBLIC_KEY");
+            const serviceID = "service_8fwy856"; // Telah diisi oleh AI
+            const templateID = "template_wun72n9"; // Telah diisi oleh AI
+            const publicKey = "BK4MeeK9KP9k-X6yM"; // Telah diisi oleh AI
+
+            if (serviceID === "YOUR_SERVICE_ID" || templateID === "YOUR_TEMPLATE_ID" || publicKey === "YOUR_PUBLIC_KEY") {
+                emailStatus.style.display = 'block';
+                emailStatus.style.color = '#ffeb3b';
+                emailStatus.innerText = "⚠️ EmailJS belum dikonfigurasi. Lihat script.js baris 480.";
+                return;
+            }
+
+            emailStatus.style.display = 'block';
+            emailStatus.style.color = '#4caf50';
+            emailStatus.innerText = "Mengirim email...";
+            btnSendEmail.disabled = true;
+
+            emailjs.send(serviceID, templateID, {
+                to_email: email,
+                download_url: window.currentDownloadUrl,
+                message: "Terima kasih telah menggunakan Photobooth kami! Berikut adalah tautan untuk mengunduh foto Anda."
+            }, publicKey)
+            .then(() => {
+                emailStatus.style.color = '#4caf50';
+                emailStatus.innerText = "✅ Email berhasil dikirim!";
+                btnSendEmail.disabled = false;
+                guestEmailInput.value = '';
+            }, (err) => {
+                emailStatus.style.color = '#ff6b6b';
+                emailStatus.innerText = "❌ Gagal mengirim email. Coba lagi.";
+                console.error(err);
+                btnSendEmail.disabled = false;
+            });
+        });
+    }
+
     // Modal Close
     closeModal.addEventListener('click', () => {
         resultModal.classList.add('hidden');
         resultContainer.innerHTML = ''; // Clear memory
+        if (emailStatus) emailStatus.style.display = 'none'; // Reset email status
+        if (guestEmailInput) guestEmailInput.value = ''; // Reset input
     });
 
     // Start

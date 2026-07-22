@@ -7,6 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <!-- QR Code Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- EmailJS Library -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -128,9 +130,16 @@
                 </div>
                 <div class="result-details">
                     <div id="qrcode" class="qrcode-container"></div>
+                    
+                    <!-- Email Feature -->
+                    <div class="email-section" style="margin-top: 15px; width: 100%; max-width: 300px;">
+                        <input type="email" id="guest-email" placeholder="Masukkan Email Anda..." class="email-input">
+                        <button id="btn-send-email" class="btn-primary" style="width: 100%; margin-top: 10px; font-size: 1rem; padding: 10px; background: #9c27b0;">📧 Kirim ke Email</button>
+                        <p id="email-status" style="font-size: 0.8rem; margin-top: 5px; color: #ffeb3b; display: none;"></p>
+                    </div>
                 </div>
                 
-                <div class="modal-actions">
+                <div class="modal-actions" style="margin-top: 20px;">
                     <a id="btn-download" href="#" class="btn-primary" download="photobooth.png">⬇️ Unduh ke Perangkat</a>
                     <button id="btn-print" class="btn-primary" style="background: #4caf50; display: none;">🖨️ Cetak Foto (Print)</button>
                 </div>

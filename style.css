@@ -325,3 +325,17 @@ button.btn-primary, button.btn-danger, a.btn-primary {
     font-size: 0.9rem;
     color: var(--text-muted);
 }
+
+.email-input {
+    width: 100%;
+    padding: 12px;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    font-size: 1rem;
+    text-align: center;
+}
+.email-input::placeholder {
+    color: rgba(255,255,255,0.5);
+}
