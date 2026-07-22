@@ -81,15 +81,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Determine target canvas size based on format
-            let targetWidth = 1920;
-            let targetHeight = 1080;
+            // Determine target canvas size based on format (Menggunakan resolusi 4K untuk kualitas maksimal)
+            let targetWidth = 3840;
+            let targetHeight = 2160;
             if (currentFormat === 'portrait') {
-                targetWidth = 1080;
-                targetHeight = 1920;
+                targetWidth = 2160;
+                targetHeight = 3840;
             } else if (currentFormat === 'square') {
-                targetWidth = 1080;
-                targetHeight = 1080;
+                targetWidth = 2160;
+                targetHeight = 2160;
             }
             captureCanvas.width = targetWidth;
             captureCanvas.height = targetHeight;
