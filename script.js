@@ -41,8 +41,13 @@ document.addEventListener('DOMContentLoaded', () => {
             currentStream.getTracks().forEach(track => track.stop());
         }
 
+        const videoConstraints = deviceId ? { deviceId: { exact: deviceId } } : { facingMode: 'user' };
+        // Meminta resolusi setinggi mungkin (idealnya 4K agar gambar sangat tajam)
+        videoConstraints.width = { ideal: 3840, min: 1280 };
+        videoConstraints.height = { ideal: 2160, min: 720 };
+
         const constraints = {
-            video: deviceId ? { deviceId: { exact: deviceId } } : { facingMode: 'user' },
+            video: videoConstraints,
             audio: false // No audio needed for photobooth, but might need for video
         };
 
