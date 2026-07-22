@@ -504,11 +504,13 @@ document.addEventListener('DOMContentLoaded', () => {
             emailStatus.innerText = "Mengirim email...";
             btnSendEmail.disabled = true;
 
+            emailjs.init(publicKey); // Initialize just to be safe
+
             emailjs.send(serviceID, templateID, {
                 to_email: email,
                 download_url: window.currentDownloadUrl,
                 message: "Terima kasih telah menggunakan Photobooth kami! Berikut adalah tautan untuk mengunduh foto Anda."
-            }, publicKey)
+            })
             .then(() => {
                 emailStatus.style.color = '#4caf50';
                 emailStatus.innerText = "✅ Email berhasil dikirim!";
@@ -516,8 +518,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 guestEmailInput.value = '';
             }, (err) => {
                 emailStatus.style.color = '#ff6b6b';
-                emailStatus.innerText = "❌ Gagal mengirim email. Coba lagi.";
-                console.error(err);
+                emailStatus.innerText = "❌ Gagal: " + (err.text || err.message || JSON.stringify(err));
+                console.error("EmailJS Error:", err);
+                alert("Error EmailJS: " + JSON.stringify(err));
                 btnSendEmail.disabled = false;
             });
         });
