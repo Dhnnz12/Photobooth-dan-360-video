@@ -42,9 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const videoConstraints = deviceId ? { deviceId: { exact: deviceId } } : { facingMode: 'user' };
-        // Meminta resolusi setinggi mungkin (idealnya 4K agar gambar sangat tajam)
-        videoConstraints.width = { ideal: 3840, min: 1280 };
-        videoConstraints.height = { ideal: 2160, min: 720 };
+        // Meminta resolusi setinggi mungkin (idealnya 4K) tetapi TIDAK MEMAKSA (tanpa 'min') agar kamera tidak error
+        videoConstraints.width = { ideal: 3840 };
+        videoConstraints.height = { ideal: 2160 };
 
         const constraints = {
             video: videoConstraints,
