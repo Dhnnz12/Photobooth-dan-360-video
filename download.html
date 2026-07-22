@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mengunduh File...</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; padding: 50px 20px; background: #111; color: white; }
+        .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-top-color: #e91e63; border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        a { color: #e91e63; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="spinner"></div>
+    <h2>Menyiapkan Unduhan...</h2>
+    <p>Jika tidak terunduh otomatis, <a id="manual-btn" href="#">Klik Disini</a>.</p>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const fileUrl = params.get('url');
+
+        if (fileUrl) {
+            const btn = document.getElementById('manual-btn');
+            btn.href = fileUrl;
+            
+            // Determine extension
+            let ext = 'png';
+            if (fileUrl.includes('.webm')) ext = 'webm';
+            if (fileUrl.includes('.mp4')) ext = 'mp4';
+            const filename = `photobooth_${Date.now()}.${ext}`;
+            
+            btn.download = filename;
+
+            // Fetch to bypass browser's default behavior of opening images
+            fetch(fileUrl)
+                .then(response => response.blob())
+                .then(blob => {
+                    const blobUrl = window.URL.createObjectURL(blob);
+                    btn.href = blobUrl;
+                    
+                    const a = document.createElement('a');
+                    a.href = blobUrl;
+                    a.download = filename;
+                    
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    
+                    document.querySelector('h2').innerText = "Unduhan Berhasil Dimulai!";
+                    document.querySelector('.spinner').style.display = 'none';
+                })
+                .catch(e => {
+                    console.error("Gagal fetch Blob, fallback ke direct link:", e);
+                    // Fallback to just opening the URL directly if CORS blocks fetch
+                    window.location.href = fileUrl;
+                });
+        } else {
+            document.querySelector('h2').innerText = "Link unduhan tidak valid.";
+            document.querySelector('.spinner').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

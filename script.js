@@ -358,9 +358,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 const dlUrl = await response.text(); // Returns raw direct URL
                 
+                // Get current host directory path
+                const currentUrlPath = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
+                // Point QR to our own download page wrapper
+                const qrUrl = `${currentUrlPath}/download.html?url=${encodeURIComponent(dlUrl)}`;
+                
                 qrContainer.innerHTML = '';
                 new QRCode(qrContainer, {
-                    text: dlUrl,
+                    text: qrUrl,
                     width: 150,
                     height: 150,
                     colorDark : "#000000",
