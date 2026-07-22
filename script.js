@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModal = document.getElementById('close-modal');
     const resultContainer = document.getElementById('result-container');
     const btnDownload = document.getElementById('btn-download');
+    const btnPrint = document.getElementById('btn-print');
     const captureCanvas = document.getElementById('capture-canvas');
     const qrContainer = document.getElementById('qrcode');
     const ctx = captureCanvas.getContext('2d');
@@ -243,6 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
         resultContainer.innerHTML = `<img src="${dataUrl}" alt="Captured Photo">`;
         btnDownload.href = dataUrl;
         btnDownload.download = `photobooth_${Date.now()}.png`;
+        btnPrint.style.display = 'inline-block'; // Show print button for photos
         
         resultModal.classList.remove('hidden');
 
@@ -330,6 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         btnDownload.href = url;
         btnDownload.download = `video360_${Date.now()}.webm`;
+        btnPrint.style.display = 'none'; // Hide print button for videos
         
         resultModal.classList.remove('hidden');
 
@@ -339,23 +342,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Upload to Cloud to generate a working QR for static sites
     async function uploadToCloudAndGenerateQR(blob, filename) {
-        qrContainer.innerHTML = '<p class="qr-text" style="color: black;">Mengunggah ke internet...</p>';
+        qrContainer.innerHTML = '<p class="qr-text" style="color: black;">Mengunggah (Tanpa Iklan)...</p>';
         
         try {
             const formData = new FormData();
-            formData.append('file', blob, filename);
+            formData.append('reqtype', 'fileupload');
+            formData.append('fileToUpload', blob, filename);
             
-            // Menggunakan tmpfiles.org (gratis, tanpa limit ketat, file otomatis hapus 60 menit)
-            const response = await fetch('https://tmpfiles.org/api/v1/upload', {
+            // Catbox.moe provides direct URLs with NO Ads
+            const response = await fetch('https://catbox.moe/user/api.php', {
                 method: 'POST',
                 body: formData
             });
             
-            const data = await response.json();
-            
-            if (data.status === 'success') {
-                // Konversi URL halaman menjadi URL direct download
-                const dlUrl = data.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+            if (response.ok) {
+                const dlUrl = await response.text(); // Returns raw direct URL
                 
                 qrContainer.innerHTML = '';
                 new QRCode(qrContainer, {
@@ -367,20 +368,51 @@ document.addEventListener('DOMContentLoaded', () => {
                     correctLevel : QRCode.CorrectLevel.M
                 });
                 
-                // Add a note about one-time use
                 const note = document.createElement('p');
                 note.style.fontSize = '0.8rem';
-                note.style.color = '#ff3333';
+                note.style.color = '#4caf50';
                 note.style.marginTop = '10px';
-                note.innerText = "*Tamu dapat scan ini untuk mendownload langsung.";
+                note.innerText = "*Scan untuk mendownload langsung (Tanpa Iklan).";
                 qrContainer.appendChild(note);
             } else {
                 qrContainer.innerHTML = '<p class="qr-text" style="color: red;">Gagal mengunggah file.</p>';
             }
         } catch (err) {
             console.error(err);
-            qrContainer.innerHTML = '<p class="qr-text" style="color: red;">Tidak ada koneksi internet untuk QR.</p>';
+            qrContainer.innerHTML = '<p class="qr-text" style="color: red;">Gagal terhubung ke server upload.</p>';
         }
+    }
+
+    // Print Photo Logic
+    if (btnPrint) {
+        btnPrint.addEventListener('click', () => {
+            const imgUrl = btnDownload.href;
+            const printWindow = window.open('', '_blank');
+            if (printWindow) {
+                printWindow.document.write(`
+                    <html>
+                        <head>
+                            <title>Print Photobooth</title>
+                            <style>
+                                body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background: #fff; }
+                                img { max-width: 100%; max-height: 100vh; object-fit: contain; }
+                                @media print {
+                                    @page { margin: 0; }
+                                    body { margin: 0; display: block; }
+                                    img { width: 100vw; height: 100vh; object-fit: contain; }
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <img src="${imgUrl}" onload="window.print(); window.close();" />
+                        </body>
+                    </html>
+                `);
+                printWindow.document.close();
+            } else {
+                alert("Browser Anda memblokir Pop-up. Harap izinkan Pop-up untuk melakukan print.");
+            }
+        });
     }
 
     // Modal Close
