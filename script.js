@@ -400,13 +400,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             if (uploadSuccess) {
-                // Store globally for email sending
-                window.currentDownloadUrl = dlUrl;
-                
                 // Get current host directory path
                 const currentUrlPath = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
                 // Point QR to our own download page wrapper
                 const qrUrl = `${currentUrlPath}/download.html?url=${encodeURIComponent(dlUrl)}`;
+                
+                // Store globally for email sending (menggunakan halaman auto-download)
+                window.currentDownloadUrl = qrUrl;
                 
                 qrContainer.innerHTML = '';
                 new QRCode(qrContainer, {
